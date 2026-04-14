@@ -134,7 +134,7 @@ public class HistoryService : IHistoryEntityRepository<HistoryRecordEntity, Date
 
         if (types != ProfileTypeFilter.All)
         {
-            var includedTypes = Enum.GetValues(typeof(ProfileType))
+            var includedTypes = Enum.GetValues<ProfileType>()
                 .Cast<ProfileType>()
                 .Where(t => (types & (ProfileTypeFilter)(1 << (int)t)) != 0)
                 .ToList();

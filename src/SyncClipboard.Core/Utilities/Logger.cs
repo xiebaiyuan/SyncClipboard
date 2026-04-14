@@ -8,7 +8,7 @@ namespace SyncClipboard.Core.Utilities
     public class Logger : ILogger, IDisposable
     {
         private readonly string LOG_FOLDER;
-        private static readonly object LOCKER = new();
+        private static readonly Lock LOCKER = new();
         private StreamWriter? _fileWriter;
         private string? _logFile;
         private bool _diagnose;

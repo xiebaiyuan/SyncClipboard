@@ -53,10 +53,7 @@ abstract public class ClipboardHander : Service
 
     public override void Load()
     {
-        if (ToggleMenuItem is not null)
-        {
-            ToggleMenuItem.Checked = SwitchOn;
-        }
+        ToggleMenuItem?.Checked = SwitchOn;
     }
 
     protected override void StopSerivce()
@@ -66,7 +63,7 @@ abstract public class ClipboardHander : Service
     }
 
     private CancellationTokenSource? _cancelSource;
-    private readonly object _cancelSourceLocker = new();
+    private readonly Lock _cancelSourceLocker = new();
 
     protected virtual CancellationToken StopPreviousAndGetNewToken()
     {

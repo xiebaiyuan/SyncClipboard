@@ -563,7 +563,7 @@ public class HistoryManager : IHistoryEntityRepository<HistoryRecord, DateTime>
 
         if (typeFilter != ProfileTypeFilter.All)
         {
-            var includedTypes = Enum.GetValues(typeof(ProfileType))
+            var includedTypes = Enum.GetValues<ProfileType>()
                 .Cast<ProfileType>()
                 .Where(t => (typeFilter & (ProfileTypeFilter)(1 << (int)t)) != 0)
                 .ToList();

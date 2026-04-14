@@ -28,8 +28,8 @@ public sealed class OfficialAdapter(
     private readonly ILogger _logger = logger;
     private readonly IAppConfig _appConfig = appConfig;
     private readonly WebDavAdapter _webDavAdapter = (WebDavAdapter)webDavAdapter;
-    private readonly object _hubLock = new object();
-    private readonly object _httpClientLock = new object();
+    private readonly Lock _hubLock = new Lock();
+    private readonly Lock _httpClientLock = new Lock();
     private HubConnection? _hubConnection;
     private OfficialConfig _officialConfig = new OfficialConfig();
     private HttpClient _httpClient = new HttpClient();
