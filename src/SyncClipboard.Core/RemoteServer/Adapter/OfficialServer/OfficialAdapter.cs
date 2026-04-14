@@ -123,7 +123,7 @@ public sealed class OfficialAdapter(
 
     private void DisconnectSignalR()
     {
-        var old = null as HubConnection;
+        HubConnection? old;
         lock (_hubLock)
         {
             old = _hubConnection;

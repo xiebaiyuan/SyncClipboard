@@ -19,11 +19,12 @@ jobs:
         include:
            - type: self-contained
              ifSelf: "true"
+             aotProps: "-p:PublishAot=true -p:TreatWarningsAsErrors=true -p:IlcTreatWarningsAsErrors=true"
            - type: no-self-contained
              ifSelf: "false"
+             aotProps: ""
 
-    runs-on: windows-2025    # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
@@ -39,20 +40,13 @@ jobs:
         dotnet-version: |
           10.0.x
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v3
-      with:
-        msbuild-architecture: x64
-
     - name: Install dependencies
       working-directory: ./src
       run: dotnet restore SyncClipboard.Desktop.Default
 
-    # - name
-        #  msBuild SyncClipboard.Desktop.Default/SyncClipboard.Desktop.Default.csproj /p:TargetFramework=net10.0 /p:RuntimeIdentifier=osx-arm64 /p:Platform=ARM64 /p:SelfContained=false /p:OutDir=../../osx-arm64-no-self-contained /p:Configuration=Release /t:Publish /v:m  
     - name: Build linux-${{ matrix.cpu }}-${{ matrix.type }} 
       run: |
-        msBuild SyncClipboard.Desktop.Default/SyncClipboard.Desktop.Default.csproj /p:TargetFramework=net10.0 /p:RuntimeIdentifier=linux-${{ matrix.cpu }} /p:Platform=${{ matrix.cpu }} /p:SelfContained=${{ matrix.ifSelf }} /p:OutDir=../../linux-${{ matrix.cpu }}-${{ matrix.type }} /p:Configuration=Release /t:Publish /v:m
+        dotnet publish SyncClipboard.Desktop.Default/SyncClipboard.Desktop.Default.csproj -f net10.0 -r linux-${{ matrix.cpu }} -p:Platform=${{ matrix.cpu }} --self-contained ${{ matrix.ifSelf }} -o ../../linux-${{ matrix.cpu }}-${{ matrix.type }} -c Release ${{ matrix.aotProps }}
       working-directory: ./src
 
     - name: Upload linux-${{ matrix.cpu }}-${{ matrix.type }}

@@ -14,9 +14,13 @@ jobs:
           - dotnet_runtime: 'self-contained'
             if_self: 'true'
             dotnet_runtime_filename: ''
+            extra_build_args: '/t:Publish /p:PublishAot=true /p:TreatWarningsAsErrors=true /p:IlcTreatWarningsAsErrors=true'
+            output_path_suffix: '\publish'
           - dotnet_runtime: 'no-self-contained'
             dotnet_runtime_filename: '_no-dotnet-runtime'
             if_self: 'false'
+            extra_build_args: ''
+            output_path_suffix: ''
           - win_app_sdk: 'win_app_sdk'
             if_app_sdk: 'true'
             win_app_sdk_filename: ''
@@ -57,10 +61,11 @@ jobs:
         /p:Configuration=Release
         /p:WindowsAppSDKSelfContained=${{ matrix.if_app_sdk }}
         /p:SelfContained=${{ matrix.if_self }}
+        ${{ matrix.extra_build_args }}
         /v:m -restore
 
     - name: copy SyncClipboard.WinUI3
-      run: xcopy src\SyncClipboard.WinUI3\bin\${{ matrix.cpu }}\Release\net10.0-windows10.0.19041.0\win-${{ matrix.cpu }} WinUI3\ /s /e
+      run: xcopy src\SyncClipboard.WinUI3\bin\${{ matrix.cpu }}\Release\net10.0-windows10.0.19041.0\win-${{ matrix.cpu }}${{ matrix.output_path_suffix }} WinUI3\ /s /e
 
     - name: set update info
       shell: bash
