@@ -26,29 +26,21 @@ namespace SyncClipboard.Core.Utilities.Image
 
         public static async Task<string> CompatibilityCast(string filePath, string newFileDir, CancellationToken cancelToken)
         {
-            var innerCts = new CancellationTokenSource();
-            var dummyTask = Task.Delay(
-                TimeSpan.FromMinutes(5),
-                CancellationTokenSource.CreateLinkedTokenSource(cancelToken, innerCts.Token).Token
-            );
+            using var innerCts = CancellationTokenSource.CreateLinkedTokenSource(cancelToken);
+            innerCts.CancelAfter(TimeSpan.FromMinutes(5));
 
             var convertTask = Task.Run(() => ConverWithMagick(filePath, newFileDir), cancelToken);
-            await Task.WhenAny(convertTask, dummyTask);
+            var timeoutTask = Task.Delay(Timeout.Infinite, innerCts.Token);
 
-            try
+            await Task.WhenAny(convertTask, timeoutTask);
+
+            if (convertTask.IsCompletedSuccessfully)
             {
-                if (convertTask.IsCompletedSuccessfully)
-                {
-                    return convertTask.Result;
-                }
-                if (convertTask.IsFaulted)
-                {
-                    throw convertTask.Exception!;
-                }
+                return convertTask.Result;
             }
-            finally
+            if (convertTask.IsFaulted)
             {
-                innerCts.Cancel();
+                throw convertTask.Exception!;
             }
 
             throw new OperationCanceledException();

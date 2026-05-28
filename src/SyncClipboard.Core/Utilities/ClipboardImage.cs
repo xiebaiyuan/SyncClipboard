@@ -5,7 +5,7 @@ namespace SyncClipboard.Core.Utilities;
 public class ClipboardImage : IClipboardImage
 {
     private static int CacheHash = 0;
-    private static readonly MemoryStream Cache = new MemoryStream();
+    private static MemoryStream Cache = new MemoryStream();
     private static readonly SemaphoreSlim CacheSemaphore = new SemaphoreSlim(1, 1);
 
     private readonly byte[] _imageBytes;
@@ -39,8 +39,8 @@ public class ClipboardImage : IClipboardImage
         using var guard = new ScopeGuard(() => CacheSemaphore.Release());
 
         CacheHash = hash;
-        Cache.SetLength(0);
-        Cache.Seek(0, SeekOrigin.Begin);
+        Cache.Dispose();
+        Cache = new MemoryStream();
         await magickImage.WriteAsync(Cache, MagickFormat.Png, token);
         await WriteToFileAsync(path, token);
     }
@@ -69,8 +69,8 @@ public class ClipboardImage : IClipboardImage
             using (var guard = new ScopeGuard(() => CacheSemaphore.Release()))
             {
                 CacheHash = hash;
-                Cache.SetLength(0);
-                Cache.Seek(0, SeekOrigin.Begin);
+                Cache.Dispose();
+                Cache = new MemoryStream();
                 await Cache.WriteAsync(result, token);
                 Cache.Seek(0, SeekOrigin.Begin);
             }
@@ -105,7 +105,9 @@ public class ClipboardImage : IClipboardImage
             return false;
         }
 
-        return _imageBytes.SequenceEqual(((ClipboardImage)obj)._imageBytes);
+        var other = (ClipboardImage)obj;
+        return _imageBytes.Length == other._imageBytes.Length
+            && GetHashCode() == other.GetHashCode();
     }
 
     public override int GetHashCode()

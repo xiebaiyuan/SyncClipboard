@@ -59,6 +59,10 @@ public class SingletonTask
         {
             methodLevelCts.Dispose();
         }
+        finally
+        {
+            linkedCts.Dispose();
+        }
     }
 
     public void Cancel()

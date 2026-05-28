@@ -47,6 +47,15 @@ internal class ClipboardListener(IClipboardFactory clipboardFactory, ILogger log
 
     private async void InvokeTick(object? _)
     {
+        try
+        {
+            if (OperatingSystem.IsMacOS() && !MacPasteboardHelper.HasChanged())
+            {
+                return;
+            }
+        }
+        catch { }
+
         if (_tickSemaphore.Wait(0) is false)
         {
             return;
