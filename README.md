@@ -1,6 +1,8 @@
 # SyncClipboard
 [![build](https://github.com/Jeric-X/SyncClipboard/actions/workflows/build-entry.yml/badge.svg?branch=master)](https://github.com/Jeric-X/SyncClipboard/actions?query=branch%3Amaster)
 
+> **注意：** 本 fork 修改了应用名称和包名，纯粹是为了避免一些不必要的麻烦，功能上与原版完全一致。建议优先使用[原版项目](https://github.com/Jeric-X/SyncClipboard)。
+
 中文 | [English](docs/README_EN.md)  
 
 <details>
