@@ -32,6 +32,15 @@ echo "=== Renaming to $APP_NAME.app ==="
 echo "=== Code signing ==="
 codesign --force --deep --sign - "$FINAL_APP"
 
+# Install to /Applications if requested
+if [ "$1" = "--install" ]; then
+    echo "=== Installing to /Applications ==="
+    /bin/rm -rf "/Applications/$APP_NAME.app" 2>/dev/null || true
+    /bin/cp -R "$FINAL_APP" "/Applications/$APP_NAME.app"
+    codesign --force --deep --sign - "/Applications/$APP_NAME.app"
+    echo "Installed to /Applications/$APP_NAME.app"
+fi
+
 # Zip
 echo "=== Creating zip ==="
 cd "$OUTPUT_DIR"
@@ -43,3 +52,8 @@ echo "=== Done ==="
 echo "App: $FINAL_APP"
 echo "Zip: $OUTPUT_DIR/$APP_NAME.zip"
 echo "Size: $(du -sh "$FINAL_APP" | cut -f1)"
+echo ""
+echo "Note: ad-hoc 签名跟路径绑定，复制到其他位置后需要重新签名："
+echo "  codesign --force --deep --sign - /path/to/$APP_NAME.app"
+echo ""
+echo "安装到 /Applications: ./build.sh --install"
