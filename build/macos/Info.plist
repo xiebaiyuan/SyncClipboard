@@ -5,9 +5,9 @@
 	<key>CFBundleIconFile</key>
 	<string>icon.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>xyz.jericx.desktop.syncclipboard</string>
+	<string>com.love.kittyhappy</string>
 	<key>CFBundleName</key>
-	<string>SyncClipboard</string>
+	<string>KittyHappy</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.15</string>
 	<key>CFBundleExecutable</key>

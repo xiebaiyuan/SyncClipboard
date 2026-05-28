@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_NAME="SyncClipboard.app"
+APP_NAME="KittyHappy.app"
 # PUBLISH_OUTPUT_DIRECTORY="../../macos-bin/."
 # chmod +x "$PUBLISH_OUTPUT_DIRECTORY/SyncClipboard.Desktop"
 

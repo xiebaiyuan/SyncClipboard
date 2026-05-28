@@ -5,7 +5,7 @@ namespace SyncClipboard.Core.Commons
 {
     public static class Env
     {
-        public const string SoftName = "SyncClipboard";
+        public const string SoftName = "KittyHappy";
         public const string HomePage = "https://github.com/Jeric-X/SyncClipboard";
         public const string AppVersion = SyncClipboardProperty.AppVersion;
 
@@ -15,7 +15,7 @@ namespace SyncClipboard.Core.Commons
 
         public const string RuntimeConfigName = "RuntimeConfig.json";
         public const string UpdateInfoFile = "update_info.json";
-        public const string LinuxPackageAppId = "xyz.jericx.desktop.syncclipboard";
+        public const string LinuxPackageAppId = "com.love.kittyhappy";
         public static readonly string LinuxUserDesktopEntryFolder = UserPath(".local/share/applications");
         public static readonly string ProgramDirectory = AppDomain.CurrentDomain.BaseDirectory;
         /// <summary>
