@@ -7,6 +7,16 @@ APP_NAME="KittyHappy"
 PROJECT="SyncClipboard.Desktop.MacOS/SyncClipboard.Desktop.MacOS.csproj"
 RID="osx-arm64"
 
+sign_app() {
+    local app_path="$1"
+    echo "=== Code signing: $app_path ==="
+    # Sign each dylib individually (--deep doesn't work reliably for .NET bundles)
+    for dylib in "$app_path"/Contents/MonoBundle/*.dylib; do
+        [ -f "$dylib" ] && codesign --force --sign - "$dylib" 2>/dev/null
+    done
+    codesign --force --sign - "$app_path"
+}
+
 echo "=== Building $APP_NAME ==="
 
 # Build
@@ -28,16 +38,15 @@ echo "=== Renaming to $APP_NAME.app ==="
 /bin/rm -rf "$FINAL_APP" 2>/dev/null || true
 /bin/mv "$BUILD_APP" "$FINAL_APP"
 
-# Re-sign
-echo "=== Code signing ==="
-codesign --force --deep --sign - "$FINAL_APP"
+# Sign
+sign_app "$FINAL_APP"
 
 # Install to /Applications if requested
 if [ "$1" = "--install" ]; then
     echo "=== Installing to /Applications ==="
     /bin/rm -rf "/Applications/$APP_NAME.app" 2>/dev/null || true
     /bin/cp -R "$FINAL_APP" "/Applications/$APP_NAME.app"
-    codesign --force --deep --sign - "/Applications/$APP_NAME.app"
+    sign_app "/Applications/$APP_NAME.app"
     echo "Installed to /Applications/$APP_NAME.app"
 fi
 
@@ -52,8 +61,5 @@ echo "=== Done ==="
 echo "App: $FINAL_APP"
 echo "Zip: $OUTPUT_DIR/$APP_NAME.zip"
 echo "Size: $(du -sh "$FINAL_APP" | cut -f1)"
-echo ""
-echo "Note: ad-hoc 签名跟路径绑定，复制到其他位置后需要重新签名："
-echo "  codesign --force --deep --sign - /path/to/$APP_NAME.app"
 echo ""
 echo "安装到 /Applications: ./build.sh --install"
